@@ -1,5 +1,7 @@
 package com.bass9030.easymessage
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -62,7 +65,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+fun RequestPermission(context: Context) {
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+        != PackageManager.PERMISSION_GRANTED
+    ) {
+        ActivityCompat.requestPermissions(this@MainActivity,
+            arrayOf(Manifest.permission.RECORD_AUDIO), 0)
+    }
+}
 
 @Composable
 fun NavScreen(navController: NavHostController) {
@@ -77,8 +87,14 @@ fun NavScreen(navController: NavHostController) {
     }
 }
 
+fun OnChatClicked(context: Context) {
+
+}
+
 @Composable
 fun Chat(navController: NavHostController, modifier: Modifier = Modifier) {
+    val context = LocalContext.current;
+    // TODO: init gemini model
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween) {
@@ -88,7 +104,7 @@ fun Chat(navController: NavHostController, modifier: Modifier = Modifier) {
             .verticalScroll(rememberScrollState())
             .padding(5.dp)
             .weight(1f, false))
-        Button(onClick = { /*TODO: STT 구현 */ }, modifier = Modifier.padding(5.dp).fillMaxWidth()) {
+        Button(onClick = { OnChatClicked(context = context) }, modifier = Modifier.padding(5.dp).fillMaxWidth()) {
             Text("대화하기", fontSize = 20.sp)
         }
     }
@@ -152,3 +168,4 @@ fun PreviewNavScreen() {
         NavScreen(navController = rememberNavController())
     }
 }
+
